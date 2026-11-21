@@ -2,7 +2,7 @@
   "manifestVersion": 2,
   "id": "regia",
   "name": "Regia",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A read-only control room for your Orca bots: what is waiting on you, the queue by priority, who is working on what, and how work flows between bots, workers and pull requests.",
   "author": {
     "name": "cryptosecco"
@@ -11,42 +11,42 @@
   "repository": "https://github.com/cryptosecco/orca-regia-plugin",
   "icon": "assets/icon.png",
   "cover": {
-    "path": "assets/cover.png",
+    "path": "assets/overview-dark.webp",
     "alt": "The Regia panel: a diagram with you at the top, the bot that holds the queue, five other bots, the agents they started and the pull requests"
   },
   "screenshots": [
     {
-      "path": "assets/overview-dark.png",
+      "path": "assets/overview-dark.webp",
       "alt": "The Overview: who hands work to whom, with amber lines where something waits on you",
       "caption": "Overview: who hands work to whom",
       "theme": "dark"
     },
     {
-      "path": "assets/queue-dark.png",
+      "path": "assets/queue-dark.webp",
       "alt": "The Queue: three decisions to take now with their options, and every open item in lanes by project",
       "caption": "Queue: what to decide now, then everything by priority",
       "theme": "dark"
     },
     {
-      "path": "assets/office-dark.png",
+      "path": "assets/office-dark.webp",
       "alt": "The Office: every agent grouped by project, working, waiting on you or idle",
       "caption": "Office: every agent, and who is waiting on you",
       "theme": "dark"
     },
     {
-      "path": "assets/overview-light.png",
+      "path": "assets/overview-light.webp",
       "alt": "The Overview in the light theme",
       "caption": "Overview: who hands work to whom",
       "theme": "light"
     },
     {
-      "path": "assets/queue-light.png",
+      "path": "assets/queue-light.webp",
       "alt": "The Queue in the light theme",
       "caption": "Queue: what to decide now, then everything by priority",
       "theme": "light"
     },
     {
-      "path": "assets/office-light.png",
+      "path": "assets/office-light.webp",
       "alt": "The Office in the light theme",
       "caption": "Office: every agent, and who is waiting on you",
       "theme": "light"

@@ -4,7 +4,7 @@ A read-only control room for your [Orca](https://github.com/stablyai/orca) bots,
 
 It only shows. It never answers a bot, writes to an agent or a terminal, or presses a permission for you. A click takes Orca to a chat, a terminal or a workspace.
 
-![The Overview: you at the top, the bot that holds the queue, the other bots, the agents they started and the pull requests](assets/cover.png)
+![The Overview: you at the top, the bot that holds the queue, the other bots, the agents they started and the pull requests](assets/overview-dark.webp)
 
 The pictures on this page are mock-ups: the panel itself, on invented bots and projects.
 
@@ -23,14 +23,8 @@ The panel updates by itself every few seconds, follows Orca's light or dark them
 
 | | |
 |---|---|
-| ![The Queue: three decisions to take now, then every open item in lanes by project](assets/queue-dark.png) | ![The Office in the light theme: every agent grouped by project, with its state](assets/office-light.png) |
-| ![The Overview in the light theme](assets/overview-light.png) | ![The Queue in the light theme](assets/queue-light.png) |
-
-In the sidebar, where it usually lives:
-
-| | |
-|---|---|
-| ![The diagram at sidebar width](assets/overview-dark-sidebar.png) | ![The Queue at sidebar width](assets/queue-dark-sidebar.png) |
+| ![The Queue: three decisions to take now, then every open item in lanes by project](assets/queue-dark.webp) | ![The Office in the light theme: every agent grouped by project, with its state](assets/office-light.webp) |
+| ![The Overview in the light theme](assets/overview-light.webp) | ![The Queue in the light theme](assets/queue-light.webp) |
 
 ## Install
 
