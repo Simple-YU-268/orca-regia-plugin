@@ -1,0 +1,587 @@
+/* Stile del pannello: un design system scuro, da terminale.
+   Token, bordi, barre, cartellini e animazioni vengono da lì. Il design system è scuro: il pannello
+   resta in questi colori anche col tema chiaro di Orca, quindi qui non si leggono le variabili --orca-*. */
+:root {
+  --bg: #050c0a; --pan: #08130f; --pan2: #0b1a15; --riga: #1b4638; --riga2: #12312a;
+  --menta: #7fe7c4; --menta2: #4fb596; --tenue: #6c9889; --spento: #3d6a5c; --testo: #d3ece2;
+  --ambra: #f0a460; --blu: #74c7f7; --rosso: #f2706a; --verde: #6fe3b4;
+  --fondo: #06100d; --carta: #07120fe6; --inchiostro: #04100c; --testo2: #a8cabd;
+  /* Le priorità della coda (rosso, arancio, giallo): passate al validatore di tavolozze sul fondo scuro. */
+  --p0: #ec4f5c; --p1: #f79a3c; --p2: #eeea72;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  /* Le superfici: il fondo dei nodi e dei cartellini, la testata, il passaggio del mouse, la riga in fondo. */
+  --sup: #07120f; --velo: #07120fd0; --fumetto: #07120ff7; --testata: #0c1613; --sopra: #0e241d; --riga-piede: #0b1d18;
+  --trama: #1a3a30; --guasto-f: #2a0d0b55; --avviso-f: #2a1a0a55; --lume: #fff; --alone1: #12392d66; --alone2: #3b2a1244;
+  color-scheme: dark;
+}
+/* Il tema chiaro di Orca: Orca mette `light` o `dark` su <html>. Gli stessi token, su carta chiara; i colori
+   di stato sono più scuri, per restare leggibili (contrasto di almeno 4.5:1 sul fondo). */
+html.light {
+  --bg: #f3f6f4; --pan: #ffffff; --pan2: #e9f0ed; --riga: #b4cdc3; --riga2: #d5e3dd;
+  --menta: #0b6e53; --menta2: #2a7f67; --tenue: #56766b; --spento: #7d9a8f; --testo: #10231c;
+  --ambra: #a85400; --blu: #125f9e; --rosso: #b8302a; --verde: #17754d;
+  --fondo: #f3f6f4; --carta: #ffffffe6; --inchiostro: #ffffff; --testo2: #33504a;
+  --p0: #c81e3a; --p1: #b85c00; --p2: #8a7a00;
+  --sup: #ffffff; --velo: #ffffffd0; --fumetto: #fffffff7; --testata: #e4ece8; --sopra: #e3f1ec; --riga-piede: #e4ece8;
+  --trama: #c9dbd3; --guasto-f: #fbe9e755; --avviso-f: #fdf1e055; --lume: #06261c; --alone1: #cfe9df66; --alone2: #f4e6d244;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--testo); }
+body { font: 12.5px/1.45 var(--mono); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+h1, h2, h3, p, ul, ol, dl, dd, dt, figure { margin: 0; padding: 0; font-size: inherit; font-weight: inherit; }
+ul, ol { list-style: none; }
+button, input { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; text-align: inherit; }
+:focus-visible { outline: 1px solid var(--menta); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+/* Il colore di un elemento è --c, come nella prova 2; qui lo danno le classi di stato. */
+.c-lavoro { --c: var(--blu); } .c-aspetta { --c: var(--ambra); } .c-finito { --c: var(--verde); }
+.c-errore { --c: var(--rosso); } .c-fermo, .c-previsto { --c: var(--menta2); } .c-menta { --c: var(--menta); }
+.c-filo { --c: var(--riga); } .c-quieto { --c: var(--menta2); }
+
+.app { container-type: inline-size; container-name: app; min-height: 100vh; display: flex; flex-direction: column;
+  background: radial-gradient(1100px 620px at 68% 42%, var(--alone1), transparent 62%), radial-gradient(800px 520px at 16% 88%, var(--alone2), transparent 60%), var(--fondo); }
+
+/* Barra della finestra e schede */
+.testa { position: sticky; top: 0; z-index: 5; background: var(--fondo); }
+.barra { display: flex; align-items: center; gap: 7px; padding: 8px 12px; background: var(--testata); color: var(--spento); font-size: 11.5px; }
+.barra i { width: 10px; height: 10px; border-radius: 50%; background: #f25f57; flex: none; }
+.barra i:nth-child(2) { background: #f8bc2f; } .barra i:nth-child(3) { background: #2bc840; }
+.barra h1 { flex: 1; min-width: 0; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aggiorna { color: var(--tenue); white-space: nowrap; flex: none; }
+.aggiorna:hover { color: var(--menta); }
+.aggiorna[disabled] { opacity: 0.45; cursor: default; }
+.viste { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px; padding: 10px 0 7px; margin: 0 12px; letter-spacing: 0.05em; font-weight: 600; font-size: 11.5px; border-bottom: 1px solid var(--riga2); }
+.viste button { color: var(--tenue); text-transform: uppercase; padding: 2px 1px; border-bottom: 2px solid transparent; white-space: nowrap; }
+.viste button:hover { color: var(--testo); }
+.viste button.amb { color: var(--ambra); }
+.viste button[aria-selected="true"] { color: var(--menta); border-color: var(--menta); }
+.viste button.amb[aria-selected="true"] { color: var(--ambra); border-color: var(--ambra); }
+.viste .conta { margin-left: 6px; color: var(--testo); font-variant-numeric: tabular-nums; }
+.viste button.amb .conta { color: inherit; }
+.viste .p { color: var(--spento); }
+
+/* Il tabellone: una riga sola in testa a ogni vista. Quanti lavorano adesso (grande), poi per fornitore,
+   e a destra chi aspetta una risposta e chi è in errore. Ogni numero è un tasto che filtra l'Office. */
+.tabellone { display: flex; align-items: stretch; gap: 0; margin: 0 12px; padding: 5px 0; border-bottom: 1px solid var(--riga2); font-size: 11px; white-space: nowrap; overflow: hidden; }
+.tabellone:empty { display: none; }
+.tab-n { display: inline-flex; align-items: baseline; gap: 5px; padding: 1px 7px; border: 1px solid transparent; color: var(--tenue); flex: none; }
+.tab-n b { color: var(--c); font-weight: 700; font-size: 12.5px; display: inline-block; }
+.tab-n.primo { padding-left: 2px; }
+.tab-n.primo b { font-size: 16px; line-height: 1; }
+.tab-n.primo span { color: var(--testo); letter-spacing: 0.05em; text-transform: uppercase; font-weight: 600; }
+.tab-n.zero b { color: var(--spento); } .tab-n.zero { color: var(--spento); }
+.tab-n:hover { color: var(--testo); border-color: var(--riga); }
+.tab-n[aria-pressed="true"] { border-color: var(--c); color: var(--testo); background: color-mix(in srgb, var(--c) 12%, transparent); }
+.tab-forn { display: inline-flex; min-width: 0; overflow: hidden; border-left: 1px solid var(--riga2); margin-left: 3px; padding-left: 1px; }
+.tab-altri { display: inline-flex; margin-left: auto; flex: none; border-left: 1px solid var(--riga2); }
+.tab-n b.sale { animation: sale 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+.tab-n b.scende { animation: scende 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes sale { from { transform: translateY(5px); opacity: 0.2; filter: drop-shadow(0 0 5px var(--c)); } }
+@keyframes scende { from { transform: translateY(-5px); opacity: 0.2; } }
+
+/* Da dove arrivano i dati, e gli avvisi */
+.fonti { display: grid; gap: 4px; padding: 8px 12px 0; font-size: 11.5px; color: var(--tenue); }
+.fonte { display: flex; gap: 7px; align-items: baseline; min-width: 0; }
+.fonte .segno { color: var(--verde); }
+.fonte.guasto { border: 1px solid var(--rosso); color: var(--testo); padding: 4px 9px; background: var(--guasto-f); }
+.fonte.guasto .segno { color: var(--rosso); }
+.avviso { margin: 6px 12px 0; border: 1px solid var(--ambra); color: var(--ambra); padding: 4px 9px; background: var(--avviso-f); font-size: 11.5px; }
+
+main { padding: 14px 12px 12px; flex: 1; min-width: 0; width: 100%; max-width: 1240px; margin: 0 auto; }
+h2 { color: var(--menta); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin: 22px 0 9px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+h2:first-child { margin-top: 0; }
+h2 small { font-size: 11.5px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--tenue); }
+h2 small.num { margin-left: auto; color: var(--testo); font-weight: 600; font-size: inherit; }
+.t { color: var(--c, var(--menta)); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.muto { color: var(--tenue); }
+.num { font-variant-numeric: tabular-nums; }
+.dx { margin-left: auto; color: var(--testo); font-weight: 600; white-space: nowrap; text-align: right; }
+.mono { color: var(--testo); word-break: break-all; }
+.taglia { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+/* Riquadri, cartellini, tasti */
+.box { position: relative; border: 1.5px solid var(--c, var(--menta2)); background: var(--carta); padding: 9px 12px; min-width: 0; }
+.box.acceso { box-shadow: 0 0 0 1px var(--c, var(--menta)) inset, 0 0 18px -4px var(--c, var(--menta)); }
+.box.tratt { border-style: dashed; }
+.tag { position: absolute; top: -9px; left: 8px; font-size: 10px; line-height: 1.45; padding: 0 5px; border: 1px solid var(--c, var(--menta2)); color: var(--c, var(--menta2)); background: var(--sup); max-width: calc(100% - 16px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 400; letter-spacing: 0; }
+.acceso > .tag, .viva > .tag { background: var(--c); color: var(--inchiostro); font-weight: 700; }
+.tasto { border: 1px solid var(--menta2); padding: 2px 8px; color: var(--menta); display: inline-block; }
+.tasto:hover { background: var(--menta); color: var(--inchiostro); }
+.collega { color: var(--menta2); text-align: left; }
+.collega:hover { color: var(--menta); text-decoration: underline; }
+.etichetta { font-size: 11.5px; padding: 0 6px; border: 1px solid var(--riga); color: var(--tenue); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.niente, .scheletro { border: 1px dashed var(--riga); padding: 18px 14px; text-align: center; color: var(--tenue); }
+.nota { margin-top: 14px; font-size: 11.5px; color: var(--tenue); max-width: 75ch; }
+
+/* Stato: sempre un segno e una parola, mai solo il colore. */
+.segno { color: var(--c, var(--tenue)); flex: none; display: inline-block; min-width: 1ch; text-align: center; }
+.stato { display: inline-flex; align-items: baseline; gap: 6px; font-size: 11.5px; color: var(--c); white-space: nowrap; }
+.stato.lavoro { --c: var(--blu); } .stato.aspetta { --c: var(--ambra); } .stato.finito { --c: var(--verde); }
+.stato.errore { --c: var(--rosso); } .stato.fermo, .stato.previsto { --c: var(--menta2); }
+.stato .segno { color: inherit; }
+
+/* Barre: piene fin dove serve, tratteggiate nel resto. Quadratini per le consegne. */
+.barra-v { display: block; width: 100%; height: 9px; background: repeating-linear-gradient(-45deg, var(--trama) 0 2px, transparent 2px 4px); }
+.barra-v rect { fill: var(--c, var(--menta)); }
+.pips { display: inline-flex; gap: 3px; align-items: center; }
+.pips i { width: 8px; height: 8px; background: var(--riga); }
+.pips i.completed { background: var(--menta); } .pips i.working { background: var(--blu); } .pips i.failed { background: var(--rosso); }
+.pallino { display: inline-block; width: 8px; height: 8px; background: var(--c, var(--menta2)); flex: none; }
+
+/* Legenda: quadratini colorati e contatori. Nell'Ufficio e nei Flussi fa anche da filtro. */
+.legenda { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-bottom: 14px; }
+.legenda button, .legenda > span { color: var(--tenue); display: inline-flex; align-items: center; gap: 7px; padding: 2px 4px; border: 1px solid transparent; white-space: nowrap; }
+.legenda button i { width: 8px; height: 8px; background: var(--c, var(--menta)); display: inline-block; flex: none; }
+.legenda button b { color: var(--testo); font-weight: 600; font-variant-numeric: tabular-nums; }
+.legenda button:hover { color: var(--testo); }
+.legenda button[aria-pressed="true"] { border-color: var(--c, var(--menta)); color: var(--testo); }
+.legenda.fili { margin: 10px 0 0; font-size: 11.5px; gap: 2px 14px; }
+.filo { width: 24px; border-top: 1.2px dashed var(--c); display: inline-block; flex: none; }
+.filo.medio { border-top-width: 1.6px; filter: drop-shadow(0 0 3px var(--c)); }
+.filo.spesso { border-top-width: 2.6px; filter: drop-shadow(0 0 4px var(--c)); }
+.filo.tratto { border-top-style: dotted; }
+
+/* Icone: tratto a 1.6 con gli angoli vivi, del colore di chi le porta. Le parti piene hanno la classe «p». */
+.ico { width: 18px; height: 18px; flex: none; color: var(--c, var(--menta2)); fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: square; stroke-linejoin: miter; overflow: visible; }
+.ico .p { fill: currentColor; stroke: none; }
+.vivo { color: var(--c); }
+
+/* Foto profilo: un riquadro con la cornice del colore di stato e il cartellino sotto. La mascotte di un
+   bot va in bicromia (grigi moltiplicati per il menta del tema) con le righe di uno schermo sopra; chi non
+   ha una mascotte porta l'icona disegnata, e un agente il volto a quadretti ricavato dal nome. */
+.pfp { --lato: 56px; position: relative; display: block; flex: none; width: var(--lato); height: var(--lato); border: 1.5px solid var(--c, var(--menta2)); background: var(--pan2); }
+.pfp .vetro { position: absolute; inset: 0; overflow: hidden; display: grid; place-items: center; }
+.pfp img { width: 100%; height: 100%; display: block; object-fit: cover; filter: grayscale(1) contrast(1.2); }
+.pfp.foto .vetro::after { content: ""; position: absolute; inset: 0; background: var(--menta); mix-blend-mode: multiply; }
+.pfp.foto::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, #04100c4d 0 1px, transparent 1px 3px); pointer-events: none; }
+.pfp .ico { width: 62%; height: 62%; }
+.pfp.foto .ico, .pfp.rotta img, .pfp.rotta .vetro::after { display: none; }
+.pfp.foto.rotta .ico { display: block; }
+/* La foto che un bot tiene nella sua casa (pfp.*): a colori, su fondo scuro, dentro la stessa cornice.
+   Una figura su fondo trasparente (.intera) si vede tutta, centrata, con un filo di margine; una foto piena
+   riempie il riquadro e si ritaglia ai lati. Finché l'immagine non c'è (.rotta) resta l'icona disegnata. */
+.pfp.sua { background: var(--bg); }
+.pfp.sua img { filter: none; object-fit: cover; object-position: center; }
+.pfp.sua.intera img { object-fit: contain; box-sizing: border-box; padding: 3px; }
+.pfp.sua:not(.rotta) .ico { display: none; }
+/* Un bot che in Orca ha un'emoji come avatar: l'emoji com'è, su fondo scuro. */
+.pfp.faccina { background: var(--bg); }
+.pfp .emoji { font: calc(var(--lato) * 0.56)/1 "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
+.pfp .volto { width: 100%; height: 100%; display: block; fill: var(--menta); shape-rendering: crispEdges; }
+.pfp .volto .o { fill: var(--menta2); }
+.pfp .cart { z-index: 1; position: absolute; left: 50%; bottom: -8px; transform: translateX(-50%); font-size: 9px; line-height: 1.35; padding: 0 4px; border: 1px solid var(--c, var(--menta2)); color: var(--c, var(--menta2)); background: var(--sup); white-space: nowrap; letter-spacing: 0.04em; max-width: calc(100% + 12px); overflow: hidden; text-overflow: ellipsis; }
+.acceso .pfp .cart, .viva .pfp .cart { background: var(--c); color: var(--inchiostro); font-weight: 700; }
+.acceso .pfp, .viva .pfp { box-shadow: 0 0 12px -3px var(--c); }
+
+/* Statistiche: righe da terminale, l'etichetta a sinistra, i puntini, il valore a destra. */
+.stat { display: grid; gap: 2px; font-size: 11.5px; min-width: 0; text-align: left; }
+.stat .r { display: flex; align-items: baseline; gap: 7px; min-width: 0; }
+.stat .k { color: var(--tenue); flex: 1; display: flex; align-items: baseline; gap: 7px; min-width: max-content; }
+.stat .k::after { content: ""; flex: 1; min-width: 8px; border-bottom: 1px dotted var(--riga); transform: translateY(-3px); }
+.stat .v { color: var(--testo); white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.stat .v.vivo { color: var(--c); }
+.stat .v b { font-weight: 700; }
+.stat .ctx .k { flex: none; }
+.stat .ctx .k::after { display: none; }
+.stat .ctx .barra-v { flex: 1; min-width: 24px; align-self: center; }
+.stat .ctx.vuota .k { flex: 1; }
+.stat .ctx.vuota .k::after { display: block; }
+.seg { color: var(--spento); letter-spacing: 1px; }
+.seg b { color: var(--menta); font-weight: 400; }
+.conto { color: var(--menta); }
+.fredda, .manca { color: var(--spento); }
+.manca { font-style: normal; }
+.stat .mancanti { display: none; color: var(--spento); }
+
+/* Panoramica: il diagramma in cima, poi le schede dei bot; nella scheda del bot che tiene la coda c'è la coda in breve */
+.diagramma { border: 1px solid var(--riga); background: var(--velo); padding: 10px 6px 6px; }
+.diagramma svg { display: block; width: 100%; height: auto; overflow: visible; }
+.diagramma > .largo { display: none; }
+.nodo rect { fill: var(--sup); stroke: var(--c, var(--menta2)); stroke-width: 1.5; }
+.nodo.acceso rect { stroke-width: 2; filter: drop-shadow(0 0 5px var(--c)); }
+.nodo.tu { --c: var(--inchiostro); } .nodo.tu rect { fill: var(--menta); stroke: var(--menta); }
+.nodo.tu .nome, .nodo.tu .ruolo { fill: var(--inchiostro); }
+.nodo.previsto { --c: var(--tenue); } .nodo.previsto rect { stroke: var(--riga); stroke-dasharray: 4 4; fill: none; }
+.nodo .nome { font: 700 12.5px var(--mono); fill: var(--testo); }
+.nodo .nome.piccolo { font-size: 10px; }
+.nodo .ruolo { font: 400 9.5px var(--mono); fill: var(--tenue); }
+.nodo.acceso .ruolo.st { fill: var(--c); font-weight: 600; }
+.nodo.previsto .nome { fill: var(--tenue); }
+/* Il bollino su un bot: i messaggi di oggi col bot al centro, quando la scritta sul filo non ci starebbe. Blu se il canale è attivo. */
+.nodo .bollino rect { fill: var(--sup); stroke: var(--riga); stroke-width: 1; filter: none; }
+.nodo .bollino text { font: 600 8px var(--mono); fill: var(--tenue); }
+.nodo .bollino.vivo rect { fill: var(--blu); stroke: var(--blu); }
+.nodo .bollino.vivo text { fill: var(--inchiostro); font-weight: 700; }
+.nodo rect.cornice { fill: none; stroke: var(--c, var(--menta2)); stroke-width: 1.5; filter: none; }
+.nodo .ritratto rect.fondo { fill: var(--bg); stroke: none; filter: none; }
+.ritratto.rotta rect.fondo { display: none; }
+.nodo .ritratto text.emoji { font: 18px/1 "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; fill: var(--testo, #fff); }
+.ritratto .ico { display: none; }
+.ritratto.rotta image { display: none; }
+.ritratto.rotta .ico { display: block; }
+.nodo rect.cornice { stroke-width: 1; }
+/* Gli agenti avviati da un bot. Il bollino a cavallo dell'angolo dice quanti sono attivi, nel colore del
+   più urgente. Sotto il nodo, un nodino per agente appeso al suo filo: quadretto un worker o un agente,
+   tondo un sub-agente. Chi lavora pulsa, e sul suo filo scorrono i trattini; chi ha finito resta spento. */
+.figlio, .figli-n { --c: var(--menta2); }
+.figlio.c-lavoro, .figli-n.c-lavoro { --c: var(--blu); } .figlio.c-aspetta, .figli-n.c-aspetta { --c: var(--ambra); }
+.figlio.c-errore, .figli-n.c-errore { --c: var(--rosso); } .figlio.c-finito { --c: var(--verde); } .figlio.c-fermo { --c: var(--spento); }
+.figli-n rect { fill: var(--c); stroke: var(--sup); stroke-width: 1.5; }
+.figli-n text { font: 700 9px var(--mono); fill: var(--inchiostro); }
+.figlio { transform-box: fill-box; transform-origin: 50% 0; }
+.figlio .stelo { fill: none; stroke: var(--c); stroke-width: 1.2; }
+.figlio .pip { fill: var(--c); stroke: var(--sup); stroke-width: 1; }
+.figlio .presa { fill: transparent; stroke: none; }
+.figlio.c-lavoro .stelo { stroke-dasharray: 2.5 2; animation: scorre-stelo 0.5s linear infinite; }
+.figlio.c-lavoro .pip { animation: batte 1.5s ease-in-out infinite; }
+.figlio.c-aspetta .pip { filter: drop-shadow(0 0 3px var(--c)); }
+.figlio.c-finito, .figlio.c-fermo { opacity: 0.5; }
+.figlio.c-finito .pip, .figlio.c-fermo .pip { fill: var(--sup); stroke: var(--c); stroke-width: 1.4; }
+.figlio.clic:hover .pip { stroke: var(--testo); stroke-width: 1.5; }
+.figlio.clic:hover { opacity: 1; }
+.figlio.nasce { animation: nasce 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.figlio.spegne { animation: spegne 1.2s ease-out both; }
+.figlio.esce { animation: esce 1.2s ease-out both; pointer-events: none; }
+.figli-piu { font: 600 9.5px var(--mono); fill: var(--tenue); pointer-events: auto; }
+@keyframes scorre-stelo { to { stroke-dashoffset: -4.5; } }
+@keyframes batte { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px var(--c)); } 50% { opacity: 0.45; filter: drop-shadow(0 0 0 var(--c)); } }
+@keyframes nasce { from { opacity: 0; transform: translateY(-7px) scale(0.2); } }
+@keyframes spegne { from { opacity: 1; filter: drop-shadow(0 0 5px var(--c)); } to { opacity: 0.5; } }
+@keyframes esce { from { opacity: 0.9; } to { opacity: 0; transform: translateY(4px) scale(0.5); } }
+.pip-l { width: 8px; height: 8px; background: var(--c); display: inline-block; flex: none; }
+.pip-l.tondo { border-radius: 50%; }
+.nome-figlio { color: var(--testo); font-weight: 700; }
+
+/* I fili: niente frecce. Sono trattini che scorrono da chi passa il lavoro a chi lo riceve, e una luce
+   li accende mentre passa (il bagliore è del colore di stato). --giro è il tempo di un passaggio della
+   luce, --passo quello di un trattino, --alone il bagliore: v1, v2, v3 crescono coi messaggi di oggi. */
+.flusso { --c: var(--riga); }
+.flusso.vivo { --c: var(--blu); } .flusso.aspetta { --c: var(--ambra); }
+.flusso.finito { --c: var(--verde); } .flusso.errore { --c: var(--rosso); }
+.flusso, .arco-testo { pointer-events: none; }
+.arco-testo.sensibile { pointer-events: auto; }
+.arco, .luce, .trattini { fill: none; }
+.arco { stroke: var(--c); stroke-width: 1.2; stroke-dasharray: 7 5; }
+.flusso.tratto .arco { stroke-dasharray: 1.5 4.5; }
+.capo { fill: var(--c); }
+.mosso { --tr: 2.6px; --passo: 0.8s; --giro: 2.6s; --alone: 5px; filter: drop-shadow(0 0 var(--alone) var(--c)); }
+.mosso.v0 { --tr: 1.6px; --passo: 1.5s; --giro: 4.4s; --alone: 3.5px; }
+.mosso.v2 { --passo: 0.55s; --giro: 2s; --alone: 6.5px; }
+.mosso.v3 { --passo: 0.36s; --giro: 1.5s; --alone: 8px; }
+.mosso .arco { stroke-width: 6; stroke-dasharray: none; opacity: 0.72; }
+.mosso .capo { display: none; }
+.trattini { stroke: #fff; stroke-width: var(--tr); stroke-dasharray: 7 5; animation: scorre var(--passo) linear infinite; }
+.luce { stroke: color-mix(in srgb, var(--c) 35%, var(--lume)); stroke-width: 6; stroke-dasharray: 22 78; animation: luce var(--giro) linear infinite; }
+@keyframes scorre { to { stroke-dashoffset: -12; } }
+@keyframes luce { from { stroke-dashoffset: 22; } to { stroke-dashoffset: -78; } }
+.arco-testo { font: 600 9.5px var(--mono); fill: var(--testo); paint-order: stroke; stroke: var(--sup); stroke-width: 4px; stroke-linejoin: round; }
+.arco-testo.aspetta { fill: var(--ambra); } .arco-testo.vivo { fill: var(--blu); } .arco-testo.muto { fill: var(--tenue); font-weight: 400; }
+
+/* ---------- La coda: «Decide now», i contatori, le corsie per progetto ----------
+   Tre famiglie di colore, ognuna con un solo significato: il pallino dice la priorità (rosso, arancio,
+   giallo, vuoto), l'ambra e il blu dicono lo stato come nel resto del pannello (aspetta te, in corso),
+   il rosso pieno dice «scaduto». Il resto è testo. La priorità non è mai solo colore: P0 ha l'anello,
+   P3 è vuoto, e le voci sono già in ordine. */
+.pal { display: inline-block; flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--pc); box-sizing: border-box; }
+.pal.p0 { --pc: var(--p0); box-shadow: 0 0 0 2px var(--fondo), 0 0 0 3px var(--p0); }
+.pal.p1 { --pc: var(--p1); } .pal.p2 { --pc: var(--p2); }
+.pal.p3 { background: none; border: 1.5px solid var(--tenue); }
+.pal.senza { border-style: dotted; border-color: var(--spento); }
+.scad { flex: none; font-size: 11px; line-height: 1.5; padding: 0 6px; border: 1px solid var(--riga); color: var(--testo); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.scad.poi { color: var(--tenue); border-color: var(--riga2); }
+.scad.oggi { color: var(--p0); border-color: var(--p0); font-weight: 700; }
+.scad.scaduto { color: var(--inchiostro); background: var(--p0); border-color: var(--p0); font-weight: 700; }
+.suono { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.consigliata { font-size: 10px; color: var(--inchiostro); background: var(--ambra); padding: 0 5px; font-weight: 700; white-space: nowrap; margin-left: auto; flex: none; align-self: center; }
+
+.vcoda { display: grid; gap: 26px; min-width: 0; }
+.vcoda section { min-width: 0; }
+.vc-decidi:focus { outline: none; }
+/* Decide now: un elenco solo, in un riquadro, con una riga tra una decisione e l'altra. Ogni decisione è un tasto. */
+.decidi { border: 1px solid var(--riga); background: var(--carta); }
+.dec + .dec { border-top: 1px solid var(--riga2); }
+.dec-tasto { width: 100%; display: grid; gap: 6px; padding: 12px 12px 10px; min-width: 0; }
+.dec-tasto:hover { background: var(--pan2); }
+.dec-tasto:active { background: var(--riga2); }
+.dec-tasto:focus-visible { outline-offset: -2px; }
+.dec-testa { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.prog { color: var(--tenue); font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
+.dec-testa .prog { flex: 1; }
+.dec-cosa { font-size: 13.5px; line-height: 1.35; font-weight: 700; color: var(--testo); overflow-wrap: anywhere; }
+.chiede, .contesto { font-size: 11.5px; color: var(--testo2); overflow-wrap: anywhere; }
+.dec .chiede, .dec .contesto { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.chiede.muto { color: var(--tenue); }
+.dec .chiede:not(.muto) { color: var(--testo); }
+.opz { display: grid; gap: 2px; font-size: 11.5px; }
+.op { display: flex; gap: 8px; align-items: baseline; color: var(--testo); min-width: 0; overflow-wrap: anywhere; }
+.op .lettera { color: var(--tenue); font-weight: 700; flex: none; }
+.op.si .lettera { color: var(--ambra); }
+.dec-piede { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 11px; margin-top: 2px; }
+.dec-piede .va { margin-left: auto; color: var(--menta2); }
+.dec-tasto:hover .va { color: var(--menta); }
+.sola-lettura { margin-top: 8px; font-size: 11px; }
+
+/* I tre contatori: numeri grandi, senza cornici in più. Si premono, e filtrano le corsie. */
+.conti { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 22px; }
+.conto-coda { display: grid; gap: 3px; padding: 9px 10px 8px; border: 1px solid var(--riga); background: var(--carta); min-width: 0; }
+.conto-coda b { font-size: 26px; line-height: 1; font-weight: 700; color: var(--c); }
+.conto-coda span { font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tenue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.conto-coda.zero b { color: var(--spento); }
+.conto-coda:hover { border-color: var(--menta2); }
+.conto-coda[aria-pressed="true"] { border-color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); }
+.conto-coda[aria-pressed="true"] span { color: var(--testo); }
+.c-p0 { --c: var(--p0); }
+
+.filtri-coda { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; font-size: 11.5px; }
+.filtri-coda button, .scegli select { border: 1px solid var(--riga); padding: 2px 8px; color: var(--tenue); background: none; white-space: nowrap; line-height: 1.45; }
+.filtri-coda button b { color: var(--testo); font-weight: 600; margin-left: 2px; }
+.filtri-coda button:hover, .scegli select:hover { color: var(--testo); border-color: var(--menta2); }
+.filtri-coda button[aria-pressed="true"], .scegli select.scelto { border-color: var(--menta); color: var(--menta); }
+.scegli { position: relative; display: inline-flex; min-width: 0; }
+.scegli select { appearance: none; -webkit-appearance: none; border-radius: 0; font: inherit; padding-right: 22px; max-width: 100%; cursor: pointer; text-overflow: ellipsis; }
+.scegli::after { content: "▾"; position: absolute; right: 7px; top: 50%; transform: translateY(-50%); color: var(--tenue); pointer-events: none; }
+
+/* Le corsie: una per progetto. L'intestazione si preme e richiude la corsia; a destra, quanti item aperti. */
+.corsia { border-top: 1px solid var(--riga2); }
+.corsia:first-child { border-top: 0; }
+.corsia-testa { width: 100%; display: flex; align-items: center; gap: 9px; padding: 11px 2px 9px; min-width: 0; }
+.corsia-testa .apre { color: var(--tenue); width: 1ch; flex: none; }
+.corsia-testa .nome { color: var(--menta); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.corsia-testa .urgenti { display: inline-flex; gap: 9px; flex: none; font-size: 11px; color: var(--tenue); }
+.corsia-testa .u { display: inline-flex; align-items: center; gap: 6px; }
+.corsia-testa .quanti { margin-left: auto; color: var(--testo); font-weight: 600; flex: none; }
+.corsia-testa:hover .nome { color: var(--testo); }
+.corsia-testa:hover .apre { color: var(--menta); }
+.corsia.chiusa .nome { color: var(--menta2); }
+.voci { padding-bottom: 8px; }
+.voce + .voce { border-top: 1px dashed var(--riga2); }
+.voce-testa { width: 100%; display: grid; grid-template-columns: 9px minmax(0, 1fr); gap: 3px 10px; padding: 7px 4px 7px 5px; min-width: 0; }
+.voce-testa .pal { margin-top: 5px; }
+.voce-testa:hover, .voce.aperta { background: var(--pan2); }
+.voce-testa:active { background: var(--riga2); }
+.voce-testa:focus-visible { outline-offset: -2px; }
+.voce .cosa { color: var(--testo); overflow-wrap: anywhere; }
+.voce.grigia .cosa { color: var(--tenue); }
+.voce .sotto { grid-column: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; font-size: 11px; color: var(--tenue); min-width: 0; }
+.voce .st { color: var(--testo2); }
+.voce .st.c-lavoro { color: var(--blu); } .voce .st.c-previsto, .voce .st.c-fermo { color: var(--tenue); }
+.voce .scad { margin-left: auto; }
+.dettaglio { padding: 2px 8px 11px 24px; display: grid; gap: 5px; font-size: 11.5px; justify-items: start; }
+.legenda-p { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--riga2); font-size: 11px; }
+.legenda-p span { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.legenda-p .pal.p0 { margin-left: 3px; }
+
+/* Stati vuoti: detti con calma, senza allarmi. */
+.quieto { border: 1px dashed var(--riga); padding: 22px 14px; text-align: center; display: grid; gap: 4px; justify-items: center; }
+.quieto::before { content: "✓"; color: var(--verde); font-size: 15px; line-height: 1; }
+.quieto b { color: var(--testo); font-weight: 700; }
+.quieto span { color: var(--tenue); font-size: 11.5px; }
+
+/* La coda in breve, dentro la scheda del bot che la tiene, nella Panoramica: i tre numeri, le decisioni in una riga, il tasto. */
+.coda { min-width: 0; margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--riga2); }
+.coda-testa { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin-bottom: 4px; }
+.breve-numeri { display: flex; flex-wrap: wrap; gap: 2px 8px; font-size: 11.5px; color: var(--tenue); margin-bottom: 7px; }
+.breve-numeri .vivo b { color: var(--c); }
+.breve-numeri b { color: var(--spento); font-weight: 700; }
+.breve { border-top: 1px solid var(--riga2); margin-bottom: 9px; }
+.breve li { display: flex; align-items: center; gap: 9px; padding: 5px 2px; border-bottom: 1px solid var(--riga2); min-width: 0; }
+.breve .cosa { flex: 1; color: var(--testo); font-size: 11.5px; }
+.breve .prog { margin-right: 4px; }
+.breve-niente { margin-bottom: 9px; }
+.coda-sola { margin-top: 22px; }
+.coda-sola .coda { margin: 0; padding: 0; border: 0; }
+.fuori { margin-top: 8px; display: grid; gap: 4px; font-size: 11.5px; color: var(--tenue); }
+.fuori li { display: flex; gap: 7px; align-items: baseline; overflow-wrap: anywhere; min-width: 0; }
+.fuori b { color: var(--ambra); font-weight: 700; }
+.fuori .tasto { margin-left: 4px; }
+
+.bots { display: grid; gap: 22px 14px; grid-template-columns: 1fr; padding-top: 4px; align-items: start; }
+.bot { min-width: 0; padding: 12px 12px 9px; }
+.bot.previsto { position: relative; border: 1.5px dashed var(--riga); --c: var(--tenue); background: transparent; opacity: 0.85; }
+.bot-testa { display: flex; gap: 11px; align-items: flex-start; min-width: 0; margin-bottom: 14px; }
+.bot-testa .pfp { --lato: 60px; }
+.bot.previsto .pfp { border-style: dashed; border-color: var(--riga); background: transparent; --lato: 44px; }
+.bot.previsto .pfp .cart { border-color: var(--riga); border-style: dashed; }
+.bot.previsto .bot-testa { margin-bottom: 10px; }
+.bot-chi { flex: 1; min-width: 0; }
+.bot-riga { display: flex; gap: 4px 9px; align-items: baseline; flex-wrap: wrap; min-width: 0; }
+.bot-nome { font-size: 13.5px; font-weight: 700; color: var(--testo); }
+.bot-riga .stato { margin-left: auto; }
+.bot-cosa { color: var(--tenue); margin-top: 3px; font-size: 11.5px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.bot .stat { padding-top: 7px; border-top: 1px dashed var(--riga2); }
+.senza { margin-top: 5px; font-size: 11.5px; }
+.bot-chi .chat { font-size: 11.5px; margin-top: 3px; }
+/* La scheda con la coda: nel pannello stretto la coda sta sotto la scheda e sopra la tabella. */
+.bot.con-coda { display: flex; flex-direction: column; }
+.bot-sx { display: contents; }
+.bot.con-coda .coda { order: 1; }
+.bot.con-coda .tab, .bot.con-coda .bot-sx > .blocco { order: 2; }
+.bot.con-coda .tab { margin-top: 10px; }
+.bot:focus { outline: none; }
+.blocco { margin-top: 8px; padding-top: 7px; border-top: 1px dashed var(--riga2); }
+.blocco.muto, .blocco .muto { font-size: 11.5px; }
+.blocco-titolo { color: var(--c, var(--menta)); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 3px; display: flex; gap: 6px; }
+.tab { width: 100%; border-collapse: collapse; margin-top: 8px; table-layout: fixed; }
+.tab th, .tab td { vertical-align: baseline; text-align: left; padding: 5px 0; border-top: 1px dashed var(--riga2); font-weight: 400; overflow-wrap: anywhere; }
+.tab th { width: 68px; color: var(--menta); font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding-right: 8px; white-space: nowrap; }
+.tab td { color: var(--testo); font-size: 11.5px; }
+.tab td b { font-weight: 700; }
+.tab .pezzo { display: block; }
+.tab .pezzo + .pezzo { margin-top: 2px; }
+.righe { display: grid; gap: 3px; margin-top: 3px; }
+.righe li { display: grid; grid-template-columns: 1.2ch minmax(0, 1fr); gap: 0 7px; align-items: baseline; }
+.righe .m { color: var(--c, var(--spento)); }
+.etichette { display: flex; flex-wrap: wrap; gap: 3px 6px; margin-top: 2px; }
+.etichetta.vivo { border-color: var(--c); }
+.collega.nome { color: var(--testo); font-weight: 700; }
+.collega.nome:hover { color: var(--menta); }
+
+/* Flussi: lo stesso diagramma, poi i messaggi */
+.posta { border: 1px solid var(--riga); padding: 4px 10px; }
+.posta li { --c: var(--menta2); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0 8px; padding: 5px 0; border-top: 1px solid var(--riga2); align-items: baseline; }
+.posta li:first-child { border-top: 0; }
+.posta .chi { font-weight: 700; color: var(--c); min-width: 0; }
+.posta .chi .freccia { color: var(--spento); font-weight: 400; padding: 0 5px; }
+.posta .ora { color: var(--spento); font-size: 11.5px; white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; }
+.posta .testo { grid-column: 2 / -1; color: var(--tenue); font-size: 11.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.posta .testo b { color: var(--testo); font-weight: 600; }
+.piu { margin-top: 8px; }
+
+/* Ufficio: una stanza per progetto, una carta per agente */
+.stanza { border: 1px solid var(--riga); padding: 12px 9px 10px; margin: 0 0 14px; min-width: 0; }
+.stanza legend { padding: 0 6px; display: flex; gap: 8px; align-items: baseline; max-width: 100%; min-width: 0; }
+.stanza legend .t { color: var(--testo); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.stanza legend span + span { font-size: 11px; color: var(--tenue); white-space: nowrap; }
+.scrivanie { display: grid; gap: 18px 10px; grid-template-columns: 1fr; }
+.scrivanie li { min-width: 0; display: grid; }
+.carta { position: relative; border: 1.5px solid var(--c); background: var(--carta); padding: 13px 10px 9px; text-align: left; min-width: 0; width: 100%; color: var(--tenue); display: grid; gap: 8px; align-content: start; transition: box-shadow 0.3s, transform 0.15s; }
+.carta .chi { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1px 11px; align-content: start; min-width: 0; padding-bottom: 5px; }
+.carta .chi .pfp { grid-row: 1 / span 3; }
+.carta:hover { transform: translateY(-2px); color: var(--testo); }
+.carta.viva { box-shadow: 0 0 0 1px var(--c) inset, 0 0 20px -5px var(--c); }
+.carta.ferma { opacity: 0.72; }
+.carta .nome { font-size: 13.5px; font-weight: 700; color: var(--testo); }
+.carta .s { font-size: 11px; color: var(--c); }
+.carta .s .segno { color: inherit; }
+.carta .fa { font-size: 11px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.carta .meta { font-size: 10.5px; color: var(--spento); display: flex; gap: 0 10px; flex-wrap: wrap; min-width: 0; overflow-wrap: anywhere; }
+/* Chi è fermo ha la scheda stretta: foto piccola, i valori in fila senza etichette, la barra sotto. */
+.carta.ferma { gap: 5px; padding-bottom: 8px; }
+.carta.ferma .chi { padding-bottom: 0; }
+.carta.ferma .pfp { --lato: 40px; }
+.carta.ferma .pfp .cart { display: none; }
+.carta.ferma .fa { -webkit-line-clamp: 1; }
+/* I valori in fila sono separati da un punto che sta davanti a ognuno: quello a inizio riga resta fuori dal ritaglio. */
+.carta.ferma .stat { --sep: 18px; display: flex; flex-wrap: wrap; gap: 1px 0; font-size: 11px; margin-left: calc(-1 * var(--sep)); clip-path: inset(0 0 0 var(--sep)); }
+.carta.ferma .stat .r { flex: none; gap: 0; }
+.carta.ferma .stat .k, .carta.ferma .stat .vuota, .carta.ferma .stat .zero, .carta.ferma .stat .lungo { display: none; }
+.carta.ferma .stat .r:not(.ctx)::before { content: "·"; color: var(--spento); width: var(--sep); text-align: center; flex: none; }
+.carta.ferma .stat .ctx, .carta.ferma .stat .mancanti { padding-left: var(--sep); }
+.carta.ferma .stat .v { color: var(--tenue); }
+.carta.ferma .stat .cache .v::before { content: "cache "; }
+.carta.ferma .stat .sub .v::before { content: "↳ sub "; }
+.carta.ferma .stat .ctx { order: 9; flex: 1 0 100%; gap: 8px; margin-top: 2px; }
+.carta.ferma .stat .mancanti { display: block; order: 8; }
+.vuote { display: flex; flex-wrap: wrap; gap: 4px 8px; }
+
+/* Incroci */
+.esito { padding: 9px 12px; }
+.esito h3 { margin-bottom: 2px; }
+.esito p { font-size: 11.5px; overflow-wrap: anywhere; }
+.zona { padding: 7px 0; border-top: 1px dashed var(--riga2); display: grid; gap: 4px; min-width: 0; }
+h2 + .zona { border-top: 0; padding-top: 0; }
+.zona.box { padding: 9px 12px; border: 1.5px solid var(--c); margin-bottom: 10px; }
+.zona .chi { display: flex; flex-wrap: wrap; gap: 4px 8px; }
+.gettone { display: inline-flex; gap: 7px; align-items: center; padding: 0 6px; border: 1px solid var(--riga); color: var(--testo); font-size: 11.5px; max-width: 100%; min-width: 0; }
+.gettone .muto { font-size: 11px; }
+
+/* Interattività: quello che si preme ha il cursore a mano, risponde al passaggio e al tasto premuto,
+   e si raggiunge con Tab. Sopra ogni filo ce n'è uno invisibile e largo, che prende il mouse. */
+.clic { cursor: pointer; }
+/* Anche i riquadri tratteggiati, che dentro sono vuoti, prendono il mouse su tutta la superficie. */
+.nodo > rect:first-child { pointer-events: all; }
+.nodo.clic:hover > rect:first-child { fill: var(--sopra); stroke-width: 2; }
+.nodo.clic:active > rect:first-child { fill: var(--riga2); }
+.nodo.previsto.clic:hover > rect:first-child { stroke: var(--tenue); }
+.nodo.clic:hover .nome { fill: var(--menta); }
+.nodo:focus-visible, .pillola:focus-visible { outline: 1.5px solid var(--testo); outline-offset: 3px; }
+.nodo.clic:focus-visible > rect:first-child { fill: var(--sopra); stroke-width: 2.5; }
+.pillola rect { fill: var(--c); }
+.pillola text { font: 700 9.5px var(--mono); fill: var(--inchiostro); }
+.pillola:hover rect { filter: brightness(1.18) drop-shadow(0 0 4px var(--c)); }
+.pillola:active rect { filter: brightness(0.86); }
+.tocco { fill: none; stroke: transparent; stroke-width: 14; pointer-events: stroke; }
+.tocco:hover { stroke: color-mix(in srgb, var(--menta) 8%, transparent); }
+.tocco.clic:hover { stroke: color-mix(in srgb, var(--menta) 18%, transparent); }
+.tocco.clic:active { stroke: color-mix(in srgb, var(--menta) 33%, transparent); }
+.arco-testo.clic:hover { text-decoration: underline; }
+.come { margin-top: 6px; font-size: 11px; }
+.vai-coda:hover { text-decoration: underline; }
+.vai-coda:active { color: var(--testo); }
+/* Il riquadro che compare sopra nodi e fili: chi, cosa, quanti messaggi. */
+.fumetto { position: fixed; z-index: 20; left: 0; top: 0; max-width: min(250px, calc(100vw - 8px)); display: grid; gap: 1px; padding: 6px 9px; background: var(--fumetto); border: 1px solid var(--menta2); box-shadow: 0 6px 22px #000b; font-size: 11px; color: var(--testo); pointer-events: none; overflow-wrap: anywhere; }
+.fumetto b { color: var(--menta); letter-spacing: 0.03em; }
+.fumetto .fa { color: var(--tenue); margin-top: 3px; padding-top: 3px; border-top: 1px dashed var(--riga2); }
+/* Dove porta un clic si accende un attimo. Con prefers-reduced-motion il bordo resta fermo e poi sparisce. */
+.lampo { outline: 2px solid var(--menta); outline-offset: 3px; animation: lampo 1.7s ease-out both; }
+@keyframes lampo { 0%, 35% { outline-color: var(--menta); outline-offset: 3px; } 100% { outline-color: transparent; outline-offset: 7px; } }
+
+/* La riga in fondo: la barra di stato della prova 2, col cursore che lampeggia */
+.piede { position: sticky; bottom: 0; z-index: 4; display: flex; gap: 10px; align-items: center; padding: 6px 12px 8px; font-size: 11.5px; background: var(--fondo); }
+.piede .scr { flex: 1; min-width: 0; background: var(--riga-piede); padding: 2px 8px; color: var(--menta); display: flex; align-items: center; gap: 0.6ch; white-space: nowrap; }
+.piede .scr span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.piede .scr i { flex: none; width: 7px; height: 13px; background: var(--menta); animation: lamp 1s steps(1) infinite; }
+.piede .orol { color: var(--tenue); font-variant-numeric: tabular-nums; }
+@keyframes lamp { 50% { opacity: 0; } }
+
+/* Con cinque viste, nel pannello stretto il numero resta solo dove c'è da guardare. */
+@container app (max-width: 460px) {
+  .viste button:not(.amb) .conta { display: none; }
+}
+@container app (max-width: 400px) {
+  /* Nel pannello stretto il tabellone resta su una riga: «waiting» ed «errors» diventano il loro segno. */
+  .tab-altri .tab-n span { display: none; }
+  .tab-altri .c-aspetta b::before { content: "⚠\FE0E "; font-weight: 400; } .tab-altri .c-errore b::before { content: "✗ "; font-weight: 400; }
+  .tab-n { padding: 1px 5px; } .tab-n.forn.zero { display: none; }
+}
+@container app (max-width: 350px) {
+  .viste button:not(.amb) .conta { display: none; }
+  .viste { letter-spacing: 0.02em; gap: 3px; font-size: 11px; }
+  .conto-coda b { font-size: 22px; } .conto-coda { padding: 8px 8px 7px; }
+  .pfp { --lato: 48px; } .bot-testa .pfp { --lato: 52px; }
+  .stat .lungo { display: none; }
+  main { padding-left: 10px; padding-right: 10px; }
+}
+@container app (min-width: 620px) {
+  .viste { gap: 6px 22px; font-size: 12.5px; letter-spacing: 0.08em; }
+  .bots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .scrivanie { grid-template-columns: repeat(auto-fill, minmax(264px, 1fr)); gap: 22px 14px; }
+  .diagramma > .stretto { display: none; } .diagramma > .largo { display: block; }
+  .arco-testo { font-size: 11px; } .nodo .ruolo, .pillola text { font-size: 10.5px; }
+  /* La scheda del bot che tiene la coda prende tutta la riga: la scheda a sinistra, la coda accanto. */
+  .bot.con-coda { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 0 20px; align-items: start; }
+  .bot-sx { display: block; min-width: 0; }
+  .bot.con-coda .coda { margin-top: 0; padding-top: 0; border-top: 0; }
+}
+@container app (min-width: 760px) {
+  /* Nel pannello largo: le decisioni a sinistra, tutta la coda a destra. */
+  .vcoda { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 30px; align-items: start; }
+}
+@container app (min-width: 980px) {
+  main { padding: 18px 22px; }
+  .bots { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .uffici { columns: 2; column-gap: 14px; } .stanza { break-inside: avoid; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  /* I fili si fermano: restano i trattini col loro colore, pieno, e il quadratino su chi riceve. */
+  .luce { display: none; } .mosso .arco { opacity: 1; } .mosso .capo { display: inline; }
+  .carta:hover { transform: none; }
+}
+/* Lo stesso quando le animazioni sono spente nelle impostazioni del plugin: regia.js mette `fermo` sulla pagina. */
+html.fermo * { animation: none !important; transition: none !important; }
+html.fermo .luce { display: none; } html.fermo .mosso .arco { opacity: 1; } html.fermo .mosso .capo { display: inline; }
+html.fermo .carta:hover { transform: none; }

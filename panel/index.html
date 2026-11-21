@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Regia</title>
+    <link rel="stylesheet" href="./regia.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="testa">
+        <div class="barra">
+          <i></i><i></i><i></i>
+          <h1>regia — your bots, live</h1>
+          <button class="aggiorna" id="aggiorna" type="button" title="Re-read every source now">[ refresh ]</button>
+        </div>
+        <nav class="viste" role="tablist" aria-label="Views" id="schede"></nav>
+        <div class="tabellone" id="tabellone" role="group" aria-label="Agents at a glance"></div>
+      </header>
+      <div class="fonti" id="fonti" aria-live="polite"></div>
+      <div class="avviso" id="avviso" role="status" hidden></div>
+      <main id="vista"><p class="scheletro">reading the data…</p></main>
+      <footer class="piede"><div class="scr"><b>#</b><span id="scr">loading</span><i></i></div><span class="orol" id="orol"></span></footer>
+    </div>
+    <script type="module" src="./regia.js"></script>
+  </body>
+</html>

@@ -1,0 +1,204 @@
+{
+  "manifestVersion": 2,
+  "id": "regia",
+  "name": "Regia",
+  "version": "0.8.0",
+  "description": "A read-only control room for your Orca bots: what is waiting on you, the queue by priority, who is working on what, and how work flows between bots, workers and pull requests.",
+  "author": {
+    "name": "cryptosecco"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/cryptosecco/orca-regia-plugin",
+  "icon": "assets/icon.png",
+  "cover": {
+    "path": "assets/cover.png",
+    "alt": "The Regia panel: a diagram with you at the top, the bot that holds the queue, five other bots, the agents they started and the pull requests"
+  },
+  "screenshots": [
+    {
+      "path": "assets/overview-dark.png",
+      "alt": "The Overview: who hands work to whom, with amber lines where something waits on you",
+      "caption": "Overview: who hands work to whom",
+      "theme": "dark"
+    },
+    {
+      "path": "assets/queue-dark.png",
+      "alt": "The Queue: three decisions to take now with their options, and every open item in lanes by project",
+      "caption": "Queue: what to decide now, then everything by priority",
+      "theme": "dark"
+    },
+    {
+      "path": "assets/office-dark.png",
+      "alt": "The Office: every agent grouped by project, working, waiting on you or idle",
+      "caption": "Office: every agent, and who is waiting on you",
+      "theme": "dark"
+    },
+    {
+      "path": "assets/overview-light.png",
+      "alt": "The Overview in the light theme",
+      "caption": "Overview: who hands work to whom",
+      "theme": "light"
+    },
+    {
+      "path": "assets/queue-light.png",
+      "alt": "The Queue in the light theme",
+      "caption": "Queue: what to decide now, then everything by priority",
+      "theme": "light"
+    },
+    {
+      "path": "assets/office-light.png",
+      "alt": "The Office in the light theme",
+      "caption": "Office: every agent, and who is waiting on you",
+      "theme": "light"
+    }
+  ],
+  "engines": {
+    "orca": ">=1.4.259"
+  },
+  "execution": "trusted-worker",
+  "pluginApi": 1,
+  "main": "src/worker.ts",
+  "contributes": {
+    "panels": [
+      {
+        "id": "regia",
+        "title": "Regia",
+        "icon": "gauge",
+        "entry": "panel/index.html",
+        "ui": "html"
+      }
+    ],
+    "commands": [
+      {
+        "id": "show",
+        "title": "Regia: show the panel",
+        "when": "global"
+      }
+    ],
+    "statusBarItems": [
+      {
+        "id": "status",
+        "text": "Regia",
+        "icon": "gauge",
+        "tone": "neutral",
+        "tooltip": "Regia: what is waiting on you",
+        "command": "show"
+      }
+    ],
+    "events": [
+      {
+        "on": "agent.status.changed"
+      },
+      {
+        "on": "workspace.changed"
+      },
+      {
+        "on": "workspace.created"
+      },
+      {
+        "on": "workspace.removed"
+      }
+    ],
+    "settings": [
+      {
+        "key": "queueBot",
+        "title": "Bot that holds the queue",
+        "description": "The name or id of the bot whose items are your queue, if one bot orchestrates the others. Leave empty to see the open items of every bot, grouped by bot.",
+        "type": "string",
+        "default": "",
+        "maxLength": 80,
+        "placeholder": "every bot"
+      },
+      {
+        "key": "titleFormat",
+        "title": "Read priority and project from item titles",
+        "description": "Reads titles written as “🔴 Project · what to do · ⏰ 24/12 17:00”: the dot is the priority (🔴 today, 🟠 within 3 days, 🟡 this week, ⚪ whenever), then the project, then an optional deadline as day/month and time. Any other title is shown as it is.",
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "key": "laneOrder",
+        "title": "Project order",
+        "description": "Project names separated by commas, in the order you want their lanes. Other projects follow in alphabetical order. Used only when one bot holds the queue.",
+        "type": "string",
+        "default": "",
+        "maxLength": 600
+      },
+      {
+        "key": "animations",
+        "title": "Animations",
+        "description": "“Follow the system” stops the animations when your system asks to reduce motion. “Off” stops them always.",
+        "type": "string",
+        "default": "system",
+        "enum": [
+          "system",
+          "off"
+        ],
+        "enumLabels": [
+          "Follow the system",
+          "Off"
+        ]
+      },
+      {
+        "key": "notifications",
+        "title": "Notify when something new is waiting on you",
+        "description": "One desktop notification for each new question from a bot or an agent. The same one is never repeated.",
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "key": "refreshSeconds",
+        "title": "Slow refresh, in seconds",
+        "description": "The queue, agent states and messages are re-read every 4 seconds. Everything else (other items, workers, chats, automations) is re-read in turns, and this is how long a full turn takes. Between 10 and 300.",
+        "type": "integer",
+        "default": 20,
+        "minimum": 10,
+        "maximum": 300
+      },
+      {
+        "key": "expectedBots",
+        "title": "Bots not there yet",
+        "description": "Names separated by commas, shown dashed until a bot with that name exists in Orca.",
+        "type": "string",
+        "default": "",
+        "maxLength": 200
+      },
+      {
+        "key": "stateFile",
+        "title": "State file (optional)",
+        "description": "Path to a JSON state file that adds model, effort, context, cache and file overlaps for each agent. Leave empty to keep this source off: no file is looked for or read.",
+        "type": "string",
+        "default": "",
+        "maxLength": 400
+      },
+      {
+        "key": "orcaCli",
+        "title": "Orca CLI executable",
+        "description": "Leave empty to use Orca's own CLI, then `orca` on the PATH.",
+        "type": "string",
+        "default": "",
+        "maxLength": 400
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "kind": "workspace:read"
+    },
+    {
+      "kind": "agent:read"
+    },
+    {
+      "kind": "storage:own"
+    },
+    {
+      "kind": "settings:own"
+    },
+    {
+      "kind": "workspace:write"
+    },
+    {
+      "kind": "notifications:show"
+    }
+  ]
+}
